@@ -21,3 +21,10 @@ class NoticeSerializer(ModelSerializer):
     class Meta:
         model = Notice
         fields = ['price', 'brand', 'model', 'get_average_price', 'get_difference']
+class NoticeListSerializer(ModelSerializer):
+    brand = BrandSerializer(many=False, read_only=True)
+    model = CarModelSerializer(many=False, read_only=True)
+
+    class Meta:
+        model = Notice
+        fields = ['price', 'brand', 'model']
