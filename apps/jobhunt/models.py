@@ -22,6 +22,9 @@ class Vacancy(BaseModel):
         verbose_name = 'Vacancy'
         verbose_name_plural = 'Vacancies'
 
+    def __str__(self):
+        return f"Vacancy by {self.company.title} Company"
+
 
 class Company(BaseModel):
     title = models.CharField(max_length=256)
@@ -38,6 +41,9 @@ class Company(BaseModel):
 
         verbose_name = 'Company'
         verbose_name_plural = 'Companies'
+
+    def __str__(self):
+        return self.title
 
 
 class Resume(BaseModel):
@@ -58,3 +64,10 @@ class Resume(BaseModel):
 
         verbose_name = 'Vacancy'
         verbose_name_plural = 'Vacancies'
+
+    @property
+    def get_fullname(self):
+        return f"Resume by {self.first_name} {self.middle_name} {self.last_name}"
+
+    def __str__(self):
+        return self.get_fullname

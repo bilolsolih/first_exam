@@ -20,14 +20,16 @@ ALLOWED_HOSTS = ['*']
 
 # Application definition
 CUSTOM_APPS = [
-    'apps.jobhunt'
+    'apps.jobhunt',
+    'apps.services'
 
 ]
 
 THIRD_PARTY_APPS = [
     'jazzmin',
     'ckeditor',
-    'phonenumbers'
+    'phonenumbers',
+    'rest_framework'
 ]
 
 BUILT_IN_APPS = [
