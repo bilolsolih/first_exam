@@ -2,11 +2,14 @@ from django.db import models
 from apps.common.models import BaseModel
 from ckeditor.fields import RichTextField
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.utils.text import slugify
 from rest_framework.response import Response
 
 
 class Service(BaseModel):
     title = models.CharField(max_length=128)
+    slug = models.SlugField(max_length=128, null=True, blank=True)
+    rated_users = models.ManyToManyField('auth.User', related_name='rated_services', blank=True)
     logo = models.ImageField(upload_to='images/services/logos/%Y/%m/%d/', null=True, blank=True)
 
     # feedbacks
@@ -15,6 +18,11 @@ class Service(BaseModel):
     class Meta:
         verbose_name = 'Service'
         verbose_name_plural = 'Services'
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super().save()
 
     @property
     def get_rating(self):
@@ -35,7 +43,20 @@ class Service(BaseModel):
                     five += 1
                 else:
                     raise ValueError('Rating should be any integer between 1 and 5!')
-            response = {'overall': final / all_feedbacks.count(), 'one': one, 'two': two, 'three': three, 'four': four, 'five': five}
+            response = {'average': final / all_feedbacks.count(), 'count': all_feedbacks.count(), 'one': one, 'two': two, 'three': three, 'four': four, 'five': five}
+            return response
+        else:
+            return {'overall': 'not rated yet'}
+
+    @property
+    def get_rating_for_listview(self):
+        all_feedbacks = self.feedbacks.all()
+        count = all_feedbacks.count()
+        final = 0
+        if all_feedbacks:
+            for feedback in all_feedbacks:
+                final += feedback.rating
+            response = {'average': final / count, 'count': count}
             return response
         else:
             return {'overall': 'not rated yet'}

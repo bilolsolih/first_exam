@@ -20,12 +20,14 @@ ALLOWED_HOSTS = ['*']
 
 # Application definition
 CUSTOM_APPS = [
+    'apps.common',
     'apps.jobhunt',
-    'apps.services'
-
+    'apps.services',
+    'apps.profiles',
 ]
 
 THIRD_PARTY_APPS = [
+    'drf_yasg',
     'jazzmin',
     'ckeditor',
     'phonenumbers',
